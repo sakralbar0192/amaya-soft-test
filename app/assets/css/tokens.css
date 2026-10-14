@@ -1,0 +1,62 @@
+/* Paywall Tokens — from Figma collection "Paywall Tokens" */
+:root {
+  --color-bg: #f3f6f8;
+  --color-surface: #ffffff;
+  --color-surface-selected: #e8f5f2;
+  --color-text: #1a2b33;
+  --color-text-muted: #5b6b73;
+  --color-text-on-accent: #ffffff;
+  --color-accent: #2f8f84;
+  --color-accent-hover: #267a71;
+  --color-border: #d5dee3;
+  --color-border-selected: #2f8f84;
+  --color-error: #c45c5c;
+  --color-success: #2f8f84;
+  --color-toast-bg: #1a2b33;
+  --color-error-bg: #fceaea;
+
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-full: 999px;
+
+  --stroke-card: 1.5px;
+  --stroke-selected: 2px;
+
+  --size-screen-w: 390px;
+  --size-tap-min: 48px;
+
+  --font-family-display: 'Fraunces', Georgia, serif;
+  --font-family-body: 'DM Sans', system-ui, sans-serif;
+
+  --font-size-title: 28px;
+  --font-size-body: 15px;
+  --font-size-price: 22px;
+  --font-size-caption: 13px;
+  --font-size-cta: 16px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-body);
+  -webkit-font-smoothing: antialiased;
+}

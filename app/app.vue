@@ -1,5 +1,3 @@
 <template>
-  <div>
-    Paywall
-  </div>
+  <NuxtPage />
 </template>
