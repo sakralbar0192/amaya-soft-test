@@ -26,3 +26,5 @@ logs
 # Local Figma plugin tooling (not part of the app)
 .vibma
 
+.cursor
+
