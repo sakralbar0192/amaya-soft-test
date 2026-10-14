@@ -7,23 +7,19 @@ type Offer = {
   badge?: string
 }
 
-const offers: Offer[] = [
-  {
-    id: 'week',
-    title: 'На неделю',
-    subtitle: 'Гибко попробовать',
-    priceLabel: '299 ₽',
-  },
-  {
-    id: 'year',
-    title: 'На год',
-    subtitle: '≈ 166 ₽ в месяц',
-    priceLabel: '1 990 ₽',
-    badge: 'Выгодно',
-  },
-]
+// SSR: страница ждёт ответ на сервере — отдельный loading в UI не нужен
+const { data: offers, error, refresh } = await useFetch<Offer[]>('/api/offers')
 
 const selectedId = ref('year')
+
+watch(offers, (list) => {
+  if (!list?.length) {
+    return
+  }
+  if (!list.some(o => o.id === selectedId.value)) {
+    selectedId.value = list[0]!.id
+  }
+}, { immediate: true })
 </script>
 
 <template>
@@ -67,33 +63,50 @@ const selectedId = ref('year')
       class="offers"
       aria-label="Тарифы"
     >
-      <button
-        v-for="offer in offers"
-        :key="offer.id"
-        type="button"
-        class="offer"
-        :class="{ 'offer--selected': selectedId === offer.id }"
-        :aria-pressed="selectedId === offer.id"
-        @click="selectedId = offer.id"
+      <div
+        v-if="error"
+        class="offers-status"
+        role="alert"
       >
-        <span class="offer__info">
-          <span class="offer__title-row">
-            <span class="offer__title">{{ offer.title }}</span>
-            <span
-              v-if="offer.badge"
-              class="offer__badge"
-            >{{ offer.badge }}</span>
+        <p>Не удалось загрузить тарифы.</p>
+        <button
+          type="button"
+          class="offers-retry"
+          @click="refresh()"
+        >
+          Повторить
+        </button>
+      </div>
+      <template v-else>
+        <button
+          v-for="offer in offers"
+          :key="offer.id"
+          type="button"
+          class="offer"
+          :class="{ 'offer--selected': selectedId === offer.id }"
+          :aria-pressed="selectedId === offer.id"
+          @click="selectedId = offer.id"
+        >
+          <span class="offer__info">
+            <span class="offer__title-row">
+              <span class="offer__title">{{ offer.title }}</span>
+              <span
+                v-if="offer.badge"
+                class="offer__badge"
+              >{{ offer.badge }}</span>
+            </span>
+            <span class="offer__subtitle">{{ offer.subtitle }}</span>
           </span>
-          <span class="offer__subtitle">{{ offer.subtitle }}</span>
-        </span>
-        <span class="offer__price">{{ offer.priceLabel }}</span>
-      </button>
+          <span class="offer__price">{{ offer.priceLabel }}</span>
+        </button>
+      </template>
     </section>
 
     <div class="actions">
       <button
         type="button"
         class="cta"
+        :disabled="!!error || !offers?.length"
       >
         Продолжить
       </button>
@@ -174,6 +187,35 @@ const selectedId = ref('year')
   display: flex;
   flex-direction: column;
   gap: var(--space-12);
+}
+
+.offers-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-12);
+  margin: 0;
+  padding: var(--space-16);
+  color: var(--color-text);
+  font-size: var(--font-size-body);
+  line-height: 1.45;
+  text-align: center;
+}
+
+.offers-status p {
+  margin: 0;
+}
+
+.offers-retry {
+  padding: var(--space-8) var(--space-16);
+  border: var(--stroke-selected) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--font-size-caption);
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .offer {
@@ -270,8 +312,13 @@ const selectedId = ref('year')
   transition: background 0.15s ease;
 }
 
-.cta:hover {
+.cta:hover:not(:disabled) {
   background: var(--color-accent-hover);
+}
+
+.cta:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .restore {
