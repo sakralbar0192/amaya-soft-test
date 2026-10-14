@@ -18,6 +18,8 @@ const { data: offers, error, refresh } = await useFetch<Offer[]>('/api/offers')
 
 const selectedId = ref('year')
 const purchaseStatus = ref<PurchaseStatus>('idle')
+const accessChecked = ref(false)
+const cancelLoading = ref(false)
 
 watch(offers, (list) => {
   if (!list?.length) {
@@ -37,6 +39,33 @@ function getOrCreateUserId(): string {
   localStorage.setItem(USER_ID_KEY, id)
   return id
 }
+
+async function syncAccessFromDb() {
+  const existing = localStorage.getItem(USER_ID_KEY)
+  if (!existing) {
+    accessChecked.value = true
+    return
+  }
+
+  try {
+    const res = await $fetch<{ active: boolean }>('/api/purchase', {
+      query: { userId: existing },
+    })
+    if (res.active) {
+      purchaseStatus.value = 'success'
+    }
+  }
+  catch {
+    // при ошибке проверки показываем тарифы — покупку можно повторить
+  }
+  finally {
+    accessChecked.value = true
+  }
+}
+
+onMounted(() => {
+  syncAccessFromDb()
+})
 
 async function onPurchase() {
   if (purchaseStatus.value === 'loading' || !selectedId.value) {
@@ -67,6 +96,33 @@ async function onPurchase() {
   }
 }
 
+async function onCancelAccess() {
+  if (cancelLoading.value) {
+    return
+  }
+
+  cancelLoading.value = true
+  const minDelay = new Promise(resolve => setTimeout(resolve, 800))
+
+  try {
+    await Promise.all([
+      $fetch('/api/purchase', {
+        method: 'DELETE',
+        body: { userId: getOrCreateUserId() },
+      }),
+      minDelay,
+    ])
+    purchaseStatus.value = 'idle'
+  }
+  catch {
+    await minDelay
+    // оставляем success — отмена не прошла
+  }
+  finally {
+    cancelLoading.value = false
+  }
+}
+
 const ctaLabel = computed(() => {
   if (purchaseStatus.value === 'loading') {
     return 'Оформляем…'
@@ -79,8 +135,11 @@ const ctaLabel = computed(() => {
 </script>
 
 <template>
-  <main class="paywall">
-    <!-- 05 Success -->
+  <main
+    v-if="accessChecked"
+    class="paywall"
+  >
+    <!-- 05 Success — из БД или после покупки -->
     <template v-if="purchaseStatus === 'success'">
       <header class="hero">
         <div
@@ -116,6 +175,14 @@ const ctaLabel = computed(() => {
           class="cta"
         >
           Начать играть
+        </button>
+        <button
+          type="button"
+          class="restore"
+          :disabled="cancelLoading"
+          @click="onCancelAccess"
+        >
+          {{ cancelLoading ? 'Отменяем…' : 'Отменить доступ' }}
         </button>
       </div>
     </template>
@@ -502,5 +569,10 @@ const ctaLabel = computed(() => {
   cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+.restore:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>
