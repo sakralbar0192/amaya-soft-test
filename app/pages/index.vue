@@ -312,7 +312,7 @@ const ctaLabel = computed(() => {
   max-width: var(--size-screen-w);
   min-height: 100dvh;
   margin: 0 auto;
-  padding: var(--space-32) var(--space-24) var(--space-32);
+  padding: var(--space-48) var(--space-24) var(--space-32);
   background: var(--color-bg);
 }
 
@@ -372,6 +372,7 @@ const ctaLabel = computed(() => {
   font-size: var(--font-size-title);
   font-weight: 700;
   line-height: 1.2;
+  letter-spacing: -3%;
 }
 
 .subtitle {
@@ -379,7 +380,8 @@ const ctaLabel = computed(() => {
   max-width: 28em;
   color: var(--color-text-muted);
   font-size: var(--font-size-body);
-  line-height: 1.45;
+  line-height: 1.5;
+  letter-spacing: 3%;
 }
 
 .offers {
@@ -449,7 +451,7 @@ const ctaLabel = computed(() => {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-6);
   min-width: 0;
 }
 
@@ -464,6 +466,7 @@ const ctaLabel = computed(() => {
   font-size: var(--font-size-body);
   font-weight: 600;
   line-height: 1.4;
+  letter-spacing: 5%;
 }
 
 .offer__badge {
@@ -471,7 +474,7 @@ const ctaLabel = computed(() => {
   border-radius: var(--radius-sm);
   background: var(--color-accent);
   color: var(--color-text-on-accent);
-  font-size: var(--font-size-caption);
+  font-size: var(--font-size-badge);
   font-weight: 600;
   line-height: 1.1;
 }
@@ -480,6 +483,7 @@ const ctaLabel = computed(() => {
   color: var(--color-text-muted);
   font-size: var(--font-size-caption);
   line-height: 1.3;
+  letter-spacing: 3%;
 }
 
 .offer__price {
@@ -526,6 +530,7 @@ const ctaLabel = computed(() => {
   font-size: var(--font-size-cta);
   font-weight: 600;
   cursor: pointer;
+  letter-spacing: 3%;
   transition:
     background 0.15s ease,
     opacity 0.15s ease;
@@ -569,6 +574,7 @@ const ctaLabel = computed(() => {
   cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 3px;
+  letter-spacing: 3%;
 }
 
 .restore:disabled {

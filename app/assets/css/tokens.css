@@ -16,12 +16,14 @@
   --color-error-bg: #fceaea;
 
   --space-4: 4px;
+  --space-6: 6px;
   --space-8: 8px;
   --space-12: 12px;
   --space-16: 16px;
   --space-20: 20px;
   --space-24: 24px;
   --space-32: 32px;
+  --space-48: 48px;
 
   --radius-sm: 12px;
   --radius-md: 16px;
@@ -40,6 +42,7 @@
   --font-size-title: 28px;
   --font-size-body: 15px;
   --font-size-price: 22px;
+  --font-size-badge: 11px;
   --font-size-caption: 13px;
   --font-size-cta: 16px;
 }
